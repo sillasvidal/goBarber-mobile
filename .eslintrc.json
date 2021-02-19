@@ -32,7 +32,11 @@
     "react-hooks/rules-of-hooks": "error",
     "prettier/prettier": "error",
     "no-use-before-define": "off",
+    "camelcase": "off",
+    "import/no-duplicates": "off",
     "react-hooks/exhaustive-deps": "warn",
+    "react/jsx-one-expression-per-line": "off",
+    "react/prop-types": "off",
     "react/jsx-filename-extension": [
       1,
       {
