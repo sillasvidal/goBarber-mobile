@@ -12,7 +12,7 @@ import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 import Icon from 'react-native-vector-icons/Feather';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera } from 'react-native-image-picker';
 
 import api from '../../services/api';
 
@@ -124,22 +124,36 @@ const Profile: React.FC = () => {
   );
 
   const handleUpdateAvatar = useCallback(() => {
-    launchCamera('', response => {
-      if (response.didCancel) {
-        return;
-      }
+    launchCamera(
+      {
+        mediaType: 'photo',
+        saveToPhotos: true,
+      },
+      response => {
+        if (response.didCancel) {
+          return;
+        }
 
-      if (response.errorMessage) {
-        Alert.alert('Erro ao atualizar seu avatar', response.errorMessage);
+        if (response.errorMessage) {
+          Alert.alert('Erro ao atualizar seu avatar', response.errorMessage);
 
-        return;
-      }
+          return;
+        }
 
-      // const source = { uri: response.uri };
+        const data = new FormData();
 
-      console.log(response.uri);
-    });
-  }, []);
+        data.append('avatar', {
+          uri: response.uri,
+          name: `${user.id}.jpg`,
+          type: 'image/jpeg',
+        });
+
+        api.patch('users/avatar', data).then(apiResponse => {
+          updateUser(apiResponse.data);
+        });
+      },
+    );
+  }, [updateUser, user.id]);
 
   const handleGoBack = useCallback(() => {
     navigation.goBack();
